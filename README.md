@@ -1,4 +1,4 @@
-# Sample Hardhat 3 Beta Project (`mocha` and `ethers`)
+# Cloud Computing & Network Security Project 2026
 
 This project showcases a Hardhat 3 Beta project using `mocha` for tests and the `ethers` library for Ethereum interactions.
 
