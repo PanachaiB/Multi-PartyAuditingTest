@@ -1,7 +1,35 @@
-# Created by https://www.toptal.com/developers/gitignore/api/python,node,jetbrains,java,tex
-# Edit at https://www.toptal.com/developers/gitignore?templates=python,node,jetbrains,java,tex
+# Node modules
+/node_modules
 
-### Java ###
+# Compilation output
+/dist
+
+# pnpm deploy output
+/bundle
+
+# Hardhat Build Artifacts
+/artifacts
+
+# Hardhat compilation (v2) support directory
+/cache
+
+# Typechain output
+/types
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Hardhat coverage reports
+/coverage
+
+# Gas snapshot files
+/.gas-snapshot
+
+# Snapshot cheatcodes output
+/snapshots
+
 # Compiled class file
 *.class
 
@@ -756,5 +784,3 @@ TSWLatexianTemp*
 
 # glossaries
 *.glstex
-
-# End of https://www.toptal.com/developers/gitignore/api/python,node,jetbrains,java,tex

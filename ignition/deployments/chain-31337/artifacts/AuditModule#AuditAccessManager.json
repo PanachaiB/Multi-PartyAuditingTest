@@ -1,0 +1,122 @@
+{
+  "_format": "hh3-artifact-1",
+  "contractName": "AuditAccessManager",
+  "sourceName": "contracts/AuditAccessManager.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "challengeDigest",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "SessionActivated",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "_h_chal",
+          "type": "bytes32"
+        }
+      ],
+      "name": "activateSession",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "peer",
+          "type": "address"
+        }
+      ],
+      "name": "authorizePeer",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "currentChallengeDigest",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "dataOwner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "isAuthorizedPeer",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "sessionActive",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x6080604052348015600e575f5ffd5b505f80546001600160a01b031916331790556102b08061002d5f395ff3fe608060405234801561000f575f5ffd5b5060043610610060575f3560e01c806302800cf114610064578063279512911461009b5780633b55e385146100c557806388ec778d146100d2578063c438658b146100e9578063de007f29146100fe575b5f5ffd5b610086610072366004610236565b60036020525f908152604090205460ff1681565b60405190151581526020015b60405180910390f35b5f546100ad906001600160a01b031681565b6040516001600160a01b039091168152602001610092565b6002546100869060ff1681565b6100db60015481565b604051908152602001610092565b6100fc6100f7366004610263565b610111565b005b6100fc61010c366004610236565b6101ba565b335f9081526003602052604090205460ff1661016d5760405162461bcd60e51b81526020600482015260166024820152752737ba1030b71030baba3437b934bd32b2103832b2b960511b60448201526064015b60405180910390fd5b60018181556002805460ff19169091179055604080518281524260208201527f960408108b43370d4286f8c09d8bd489d5a7ac79886ac77c03a5fd8c34e35dce910160405180910390a150565b5f546001600160a01b031633146102135760405162461bcd60e51b815260206004820152601d60248201527f4f6e6c792044617461204f776e65722063616e20617574686f72697a650000006044820152606401610164565b6001600160a01b03165f908152600360205260409020805460ff19166001179055565b5f60208284031215610246575f5ffd5b81356001600160a01b038116811461025c575f5ffd5b9392505050565b5f60208284031215610273575f5ffd5b503591905056fea264697066735822122054280897d0facfe3e414b5e2b78c516e862e802c803621bcb7f800617bc36c7864736f6c634300081c0033",
+  "deployedBytecode": "0x608060405234801561000f575f5ffd5b5060043610610060575f3560e01c806302800cf114610064578063279512911461009b5780633b55e385146100c557806388ec778d146100d2578063c438658b146100e9578063de007f29146100fe575b5f5ffd5b610086610072366004610236565b60036020525f908152604090205460ff1681565b60405190151581526020015b60405180910390f35b5f546100ad906001600160a01b031681565b6040516001600160a01b039091168152602001610092565b6002546100869060ff1681565b6100db60015481565b604051908152602001610092565b6100fc6100f7366004610263565b610111565b005b6100fc61010c366004610236565b6101ba565b335f9081526003602052604090205460ff1661016d5760405162461bcd60e51b81526020600482015260166024820152752737ba1030b71030baba3437b934bd32b2103832b2b960511b60448201526064015b60405180910390fd5b60018181556002805460ff19169091179055604080518281524260208201527f960408108b43370d4286f8c09d8bd489d5a7ac79886ac77c03a5fd8c34e35dce910160405180910390a150565b5f546001600160a01b031633146102135760405162461bcd60e51b815260206004820152601d60248201527f4f6e6c792044617461204f776e65722063616e20617574686f72697a650000006044820152606401610164565b6001600160a01b03165f908152600360205260409020805460ff19166001179055565b5f60208284031215610246575f5ffd5b81356001600160a01b038116811461025c575f5ffd5b9392505050565b5f60208284031215610273575f5ffd5b503591905056fea264697066735822122054280897d0facfe3e414b5e2b78c516e862e802c803621bcb7f800617bc36c7864736f6c634300081c0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {},
+  "immutableReferences": {},
+  "inputSourceName": "project/contracts/AuditAccessManager.sol",
+  "buildInfoId": "solc-0_8_28-28a48b10c1b6d6f25c9b2d45fab25162f4b078d0"
+}

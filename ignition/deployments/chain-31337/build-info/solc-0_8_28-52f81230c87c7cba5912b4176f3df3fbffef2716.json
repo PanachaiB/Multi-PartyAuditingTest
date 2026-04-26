@@ -1,0 +1,49 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_28-52f81230c87c7cba5912b4176f3df3fbffef2716",
+  "solcVersion": "0.8.28",
+  "solcLongVersion": "0.8.28+commit.7893614a",
+  "compilerType": "solc",
+  "toolVersions": {
+    "hardhat": "3.4.1"
+  },
+  "userSourceNameMap": {
+    "contracts/AuditEvidenceRegistry.sol": "project/contracts/AuditEvidenceRegistry.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "cancun",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode.linkReferences",
+            "evm.bytecode.object",
+            "evm.bytecode.opcodes",
+            "evm.bytecode.sourceMap",
+            "evm.deployedBytecode.immutableReferences",
+            "evm.deployedBytecode.linkReferences",
+            "evm.deployedBytecode.object",
+            "evm.deployedBytecode.opcodes",
+            "evm.deployedBytecode.sourceMap",
+            "evm.methodIdentifiers"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/AuditEvidenceRegistry.sol": {
+        "content": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.24;\r\n\r\n/**\r\n * @title AuditEvidenceRegistry\r\n * @dev Creates the voting system, allowing for multi-party collaborative auditing.\r\n */\r\n\r\ncontract AuditEvidenceRegistry {\r\n    struct AuditSession {\r\n        bytes32 smtRoot;   \r\n        uint256 voteCount; \r\n        bool finalized;    \r\n        bool isSuccess;      \r\n    }\r\n\r\n    uint256 public constant THRESHOLD = 2; // T = 2 for this demo\r\n    mapping(bytes32 => AuditSession) public audits;\r\n    mapping(bytes32 => mapping(address => bool)) public hasVoted;\r\n\r\n    event AuditFinalized(bytes32 challengeDigest, bool result);\r\n\r\n    // Phase 4: Submit local verdict (v_j)\r\n    function submitVote(bytes32 h_chal, bytes32 _smtRoot, bool localVerdict) external {\r\n        AuditSession storage session = audits[h_chal];\r\n        \r\n        require(!session.finalized, \"Audit already finished\");\r\n        require(!hasVoted[h_chal][msg.sender], \"Peer already voted\");\r\n\r\n        if (localVerdict) {\r\n            session.voteCount += 1;\r\n            session.smtRoot = _smtRoot; // Store the root for public verification\r\n        }\r\n\r\n        hasVoted[h_chal][msg.sender] = true;\r\n\r\n        // Phase 5: Threshold-based Decision\r\n        if (session.voteCount >= THRESHOLD) {\r\n            session.finalized = true;\r\n            session.isSuccess = true;\r\n            emit AuditFinalized(h_chal, true);\r\n        }\r\n    }\r\n}"
+      }
+    }
+  }
+}
