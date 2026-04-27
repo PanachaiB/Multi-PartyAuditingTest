@@ -1,57 +1,54 @@
-# Cloud Computing & Network Security Project 2026
-
-This project showcases a Hardhat 3 Beta project using `mocha` for tests and the `ethers` library for Ethereum interactions.
-
-To learn more about the Hardhat 3 Beta, please visit the [Getting Started guide](https://hardhat.org/docs/getting-started#getting-started-with-hardhat-3). To share your feedback, join our [Hardhat 3 Beta](https://hardhat.org/hardhat3-beta-telegram-group) Telegram group or [open an issue](https://github.com/NomicFoundation/hardhat/issues/new) in our GitHub issue tracker.
+# Multi-Party Auditing Framework
 
 ## Project Overview
+This repository is meant to showcase and implement the system model as depicted in the research paper submitted to Professor Somchart Fugkeaw, utilizing Node.js Hardhat to simulate the blockchain and scripts to run encryption, decryption, authentication, and auditing schemes as a proof of concept for our system model.
 
-This example project includes:
+## Prerequisite
+This project utilizes Node.js Hardhat tool in order to simulate a local blockchain that was used for the majority of the test cases. The current version used by this paper is v24.15.0 which can be found at the Node.js website using the prepared installer. During the installation phase, it is advised that you check the box to isntall necessary tools (this should include Chocolatey and other necessary tools that allow certain dependencies to work). Once done, a few more things need to be done in order to ensure complete functionality before the tests. Git is also recommended but not necessary.
 
-- A simple Hardhat configuration file.
-- Foundry-compatible Solidity unit tests.
-- TypeScript integration tests using `mocha` and ethers.js
-- Examples demonstrating how to connect to different types of networks, including locally simulating OP mainnet.
+## Setting up the environment.
 
-## Usage
+Install the project by using the git clone in your terminal. Copy the URL from under the <>Code section.
+
+```shell
+git clone <this repository's url>
+```
+
+Alternatively, you can simply download the repository as a zip file under the drop down menu after pressing <>Code. This will not affect the project's ability to function, so use the method that you find most convenient. Once you have cloned/installed and unzipped the repository, point your terminal to the repository's folder on your computer.
+
+```shell
+cd <your folder's file path
+```
+
+For Windows, you can simply drag the folder from file explorer onto the terminal to copy paste the file path for your folder. Once you've successfully pointed your terminal to the repository folder, execute the commands:
+
+```shell
+npm install
+npx hardhat compile
+```
+
+'npm install' will download all needed dependencies, and 'npx hardhat compile' will ensure that the smart contract is properly compiled and adjusted for testing
 
 ### Running Tests
 
-To run all the tests in the project, execute the following command:
+Now we can move to running tests. The proof of concept logic test is in the file runSimulation.ts and can be run using the following command:
 
 ```shell
-npx hardhat test
+npx tsx scripts/runSimulation.ts
 ```
 
-You can also selectively run the Solidity or `mocha` tests:
+If you can a text editor, you can open the file and change some parameters like the number of auditing peers, the threshold, and other factors that could influence the voting process. Next, we will move onto running the commands that are used for benchmarking the performance of our system.
 
 ```shell
-npx hardhat test solidity
-npx hardhat test mocha
+npx tsx scripts/encryptbenchmark.ts
+npx tsx scripts/smtbenchmark.ts
+npx tsx scripts/tag-zkp-authenbenchmark.ts
+npx tsx scripts/auditbenchmark.ts
+npx tsx scripts/retrievalbenchmark.ts
 ```
 
-### Make a deployment to Sepolia
-
-This project includes an example Ignition module to deploy the contract. You can deploy this module to a locally simulated chain or to Sepolia.
-
-To run the deployment to a local chain:
-
-```shell
-npx hardhat ignition deploy ignition/modules/Counter.ts
-```
-
-To run the deployment to Sepolia, you need an account with funds to send the transaction. The provided Hardhat configuration includes a Configuration Variable called `SEPOLIA_PRIVATE_KEY`, which you can use to set the private key of the account you want to use.
-
-You can set the `SEPOLIA_PRIVATE_KEY` variable using the `hardhat-keystore` plugin or by setting it as an environment variable.
-
-To set the `SEPOLIA_PRIVATE_KEY` config variable using `hardhat-keystore`:
-
-```shell
-npx hardhat keystore set SEPOLIA_PRIVATE_KEY
-```
-
-After setting the variable, you can run the deployment with the Sepolia network:
-
-```shell
-npx hardhat ignition deploy --network sepolia ignition/modules/Counter.ts
-```
+'encryptbenchmark.ts' shows the performance of our encryption method by testing with various data sizes.
+'smtbenchmark.ts' is our proof that the On-Chain storage remains O(1) across all numbers of node due to the blockchain only storing the root node, along with the build time for the tree and proof generation
+'tag-zkp-authenbenchmark.ts' runs a test for the tagging, zkp, and authentication time.
+'auditbenchmark.ts' runs a test that simulates any additional overhead in auditing with the increase in auditing peers.
+'retreivalbenchmark.ts' since our paper emphasizes on being able to verify data before retrieval, this test provides a test to see how much delay is added due to the process of verifying data before retrieval.
