@@ -1,5 +1,27 @@
 import { CryptoCore } from "../lib/CryptoCore.js";
 import * as secp from "@noble/secp256k1";
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import hre from "hardhat";
+const { ethers } = hre as any;
+import * as fs from "fs";
+import * as path from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+async function getDeployedAddress(contractName: string) {
+    // This will now work correctly
+    const filePath = path.join(__dirname, "../ignition/deployments/chain-31337/deployed_addresses.json");
+    
+    if (!fs.existsSync(filePath)) {
+        throw new Error(`Deployment file not found at ${filePath}. Did you run ignition deploy?`);
+    }
+
+    const addresses = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    const key = Object.keys(addresses).find(k => k.includes(contractName));
+    return key ? addresses[key] : null;
+}
 
 async function runBenchmarks() {
     console.log("--- Research Paper Performance Evaluation ---");
@@ -27,17 +49,25 @@ async function runBenchmarks() {
     const endZKP = performance.now();
     console.log(`[Phase 3] ZKP Proving Time (Auditor): ${(endZKP - startZKP).toFixed(4)} ms`);
 
-    // 3. Measure Phase 5: Verification (Authentication Latency)
     const startVerify = performance.now();
     const isValid = await CryptoCore.verifyZKP(proof.full, challenge, pubKey);
     const endVerify = performance.now();
+
+    const registryAddress = await getDeployedAddress("AuditEvidenceRegistry");
+    const registry = await (hre as any).ethers.getContractAt("AuditEvidenceRegistry", registryAddress);
+
+    const mockRoot = ethers.ZeroHash; 
+    const mockChallenge = ethers.encodeBytes32String("auth-test");
+    const tx = await registry.submitVote(mockChallenge, mockRoot, true); 
+    const receipt = await tx.wait();
+
     console.log(`[Phase 5] Auth Verification Time (Verifier): ${(endVerify - startVerify).toFixed(4)} ms`);
     console.log(`Verification Successful: ${isValid}`);
     
     console.log("-------------------------------------------");
-    console.log("Data for your paper's table:");
+    console.log(`- On-Chain Verification Gas: ${receipt.gasUsed.toString()} units`);
     console.log(`Proof Size: 64 bytes (R: 32B, s: 32B)`);
     console.log(`HVT Size: 32 bytes`);
 }
 
-runBenchmarks().catch(console.error);
+runBenchmarks();

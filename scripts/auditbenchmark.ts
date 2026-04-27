@@ -1,15 +1,52 @@
 import { CryptoCore } from "../lib/CryptoCore.js";
+import hre from "hardhat";
+const { ethers } = hre as any;
 import * as secp from "@noble/secp256k1";
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import * as fs from "fs";
+import * as path from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+async function getDeployedAddress(contractName: string) {
+    // This will now work correctly
+    const filePath = path.join(__dirname, "../ignition/deployments/chain-31337/deployed_addresses.json");
+    
+    if (!fs.existsSync(filePath)) {
+        throw new Error(`Deployment file not found at ${filePath}. Did you run ignition deploy?`);
+    }
+
+    const addresses = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    const key = Object.keys(addresses).find(k => k.includes(contractName));
+    return key ? addresses[key] : null;
+}
 
 async function testConsensusScaling() {
+
+
     console.log("\n--- Phase 3: Multi-Party Consensus Evaluation ---");
-    
+
+
     const auditorPoolSizes = [3, 5, 10, 15, 20]; // Total auditors (m)
     const thresholdPercentage = 0.6; // 60% threshold (T)
 
     for (const m of auditorPoolSizes) {
         const T = Math.ceil(m * thresholdPercentage);
-        
+            
+        const registryAddress = await getDeployedAddress("AuditEvidenceRegistry");
+        const registry = await (hre as any).ethers.getContractAt("AuditEvidenceRegistry", registryAddress);
+
+        let totalGasforConsensus = 0n;
+        const mockRoot = ethers.ZeroHash;
+        const mockChallenge = ethers.encodeBytes32String(`audit-${m}`);
+
+        for (let i = 0; i < T; i++) {
+            const tx = await registry.submitVote(mockChallenge, mockRoot, true);
+            const receipt = await tx.wait();
+            totalGasforConsensus += receipt.gasUsed;
+        }
         // Setup auditors
         const auditors = Array.from({ length: m }, () => {
             const priv = secp.utils.randomSecretKey();
@@ -40,6 +77,8 @@ async function testConsensusScaling() {
         console.log(`Auditors (m): ${m} | Threshold (T): ${T}`);
         console.log(`- Batch Verification Latency: ${totalLatency.toFixed(4)} ms`);
         console.log(`- Average per-auditor overhead: ${(totalLatency / T).toFixed(4)} ms`);
+        console.log(`- Total Consensus Gas: ${totalGasforConsensus.toString()} units`);
+        console.log(`- Average Gas per Auditor: ${(totalGasforConsensus / BigInt(m)).toString()}`);
     }
 }
 

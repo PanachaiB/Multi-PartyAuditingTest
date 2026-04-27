@@ -1,6 +1,27 @@
 import { MerkleTree } from 'merkletreejs';
 import { sha256 } from "@noble/hashes/sha2.js";
-import { bytesToHex } from '@noble/hashes/utils';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import hre from "hardhat";
+const { ethers } = hre as any;
+import * as fs from "fs";
+import * as path from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+async function getDeployedAddress(contractName: string) {
+    // This will now work correctly
+    const filePath = path.join(__dirname, "../ignition/deployments/chain-31337/deployed_addresses.json");
+    
+    if (!fs.existsSync(filePath)) {
+        throw new Error(`Deployment file not found at ${filePath}. Did you run ignition deploy?`);
+    }
+
+    const addresses = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    const key = Object.keys(addresses).find(k => k.includes(contractName));
+    return key ? addresses[key] : null;
+}
 
 async function testSMTScaling() {
     // Dataset sizes for evaluation: 100 to 10,000 nodes 
@@ -23,6 +44,15 @@ async function testSMTScaling() {
         const root = tree.getHexRoot();
         const endBuild = performance.now();
 
+        const registryAddress = await getDeployedAddress("AuditEvidenceRegistry");
+        const AuditRegistry = await (hre as any).ethers.getContractFactory("AuditEvidenceRegistry");
+        const registry = await AuditRegistry.attach(registryAddress);
+
+        const mockChallenge = ethers.encodeBytes32String(`sim-${size}`);
+
+        const tx = await registry.submitVote(mockChallenge, root, true); 
+        const receipt = await tx.wait(); // This captures the block data
+
         // Step 3: Measure Membership Proof Generation (Auditing Overhead)
         // This is needed for Phase 3 peer verification [cite: 1012, 1087]
         const testLeaf = leaves[0];
@@ -34,6 +64,7 @@ async function testSMTScaling() {
         console.log(`- Build Time (SMT Root): ${(endBuild - startBuild).toFixed(4)} ms`);
         console.log(`- Proof Generation: ${(endProof - startProof).toFixed(4)} ms`);
         console.log(`- Root Hash: ${root.slice(0, 16)}...`);
+        console.log(`- On-Chain Gas Cost: ${receipt.gasUsed.toString()} units`);
     }
 }
 

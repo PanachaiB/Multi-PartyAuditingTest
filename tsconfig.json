@@ -8,6 +8,14 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "moduleResolution": "NodeNext",
-    "outDir": "dist"
-  }
+    "outDir": "dist",
+
+    "types": ["node", "hardhat"]
+  },
+
+  "include": [
+    "scripts",
+    "test",
+    "hardhat.config.cjs"
+  ]
 }
