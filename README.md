@@ -11,13 +11,13 @@ This project utilizes Node.js Hardhat tool in order to simulate a local blockcha
 Install the project by using the git clone in your terminal. Copy the URL from under the <>Code section.
 
 ```shell
-git clone <this repository's url>
+git clone <"this repository's url">
 ```
 
 Alternatively, you can simply download the repository as a zip file under the drop down menu after pressing <>Code. This will not affect the project's ability to function, so use the method that you find most convenient. Once you have cloned/installed and unzipped the repository, point your terminal to the repository's folder on your computer.
 
 ```shell
-cd <your folder's file path>
+cd <"your folder's file path">
 ```
 
 For Windows, you can simply drag the folder from file explorer onto the terminal to copy paste the file path for your folder. Once you've successfully pointed your terminal to the repository folder, execute the commands:
