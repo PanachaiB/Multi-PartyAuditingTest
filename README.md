@@ -1,7 +1,7 @@
 # Multi-Party Auditing Framework
 
 ## Project Overview
-This repository is meant to showcase and implement the system model as depicted in the research paper submitted to Professor Somchart Fugkeaw, utilizing Node.js Hardhat to simulate the blockchain and scripts to run encryption, decryption, authentication, and auditing schemes as a proof of concept for our system model.
+This repository is meant to showcase and implement the system model as depicted in the research paper submitted as a term project, utilizing Node.js Hardhat to simulate the blockchain and scripts to run encryption, decryption, authentication, and auditing schemes as a proof of concept for our system model.
 
 ## Prerequisite
 This project utilizes Node.js Hardhat tool in order to simulate a local blockchain that was used for the majority of the test cases. The current version used by this paper is v24.15.0 which can be found at the Node.js website using the prepared installer. During the installation phase, it is advised that you check the box to isntall necessary tools (this should include Chocolatey and other necessary tools that allow certain dependencies to work). Once done, a few more things need to be done in order to ensure complete functionality before the tests. Git is also recommended but not necessary.
