@@ -11,7 +11,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 async function getDeployedAddress(contractName: string) {
-    // This will now work correctly
     const filePath = path.join(__dirname, "../ignition/deployments/chain-31337/deployed_addresses.json");
     
     if (!fs.existsSync(filePath)) {
@@ -29,8 +28,8 @@ async function testConsensusScaling() {
     console.log("\n--- Phase 3: Multi-Party Consensus Evaluation ---");
 
 
-    const auditorPoolSizes = [3, 5, 10, 15, 20]; // Total auditors (m)
-    const thresholdPercentage = 0.6; // 60% threshold (T)
+    const auditorPoolSizes = [3, 5, 10, 15, 20];
+    const thresholdPercentage = 0.6;
 
     for (const m of auditorPoolSizes) {
         const T = Math.ceil(m * thresholdPercentage);
@@ -47,25 +46,18 @@ async function testConsensusScaling() {
             const receipt = await tx.wait();
             totalGasforConsensus += receipt.gasUsed;
         }
-        // Setup auditors
         const auditors = Array.from({ length: m }, () => {
             const priv = secp.utils.randomSecretKey();
             return { priv, pub: secp.schnorr.getPublicKey(priv) };
         });
 
         const challenge = "audit-block-verify-sequence-001";
-
-        // A. Measure Parallel Proving Time (Simulation of auditors working)
-        // In a real network, this happens in parallel, so we take the "Max" 
-        // or just one instance plus overhead.
         const startProving = performance.now();
         const proofs = await Promise.all(
             auditors.slice(0, T).map(a => CryptoCore.generateZKP(challenge, a.priv))
         );
         const endProving = performance.now();
 
-        // B. Measure Batch Verification Time (Consensus Overhead)
-        // This is how long the Blockchain/Lead Peer takes to verify T proofs.
         const startVerify = performance.now();
         const results = await Promise.all(
             proofs.map((p, i) => CryptoCore.verifyZKP(p.full, challenge, auditors[i].pub))

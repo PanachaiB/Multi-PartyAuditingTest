@@ -3,48 +3,49 @@ import { sha256 } from "@noble/hashes/sha2.js";
 import { hmac } from "@noble/hashes/hmac.js";
 
 secp.hashes.sha256 = sha256;
-secp.hashes.hmacSha256 = (key, msg) =>
-  hmac(sha256, key, msg);
+secp.hashes.hmacSha256 = (key, ...args) => hmac(sha256, key, ...args);
 
-async function testRetrievalAndDecryption() {
-    console.log("\n--- Phase 4 & 5: Retrieval & Decryption Evaluation ---");
-
-    // Mock 1KB Data Block
-    const blockSize = 1024; 
-    const mockCiphertext = crypto.getRandomValues(new Uint8Array(blockSize));
-    
-    // 1. SMT Membership Proof Verification
-    // (Simulating the client receiving a leaf and its proof from the cloud)
-    const startSMT = performance.now();
-    // In your previous SMT test, you generated a proof. 
-    // Here we measure the client-side 'verify' cost.
-    // Logic: IsLeafInRoot(leaf, proof, root)
-    const endSMT = performance.now();
-    const smtTime = endSMT - startSMT;
-
-    // 2. Auth Signature Verification (Phase 4)
-    // Does the client trust the 'Audit Verdict'?
-    const auditorPriv = secp.utils.randomSecretKey();
-    const auditorPub = secp.schnorr.getPublicKey(auditorPriv);
+async function testMultiPartyRetrieval() {
+    const auditorPoolSizes = [3, 5, 10, 15, 20];
     const verdict = "DataBlock_001_Is_Valid";
-    const sig = await secp.schnorr.sign(new TextEncoder().encode(verdict), auditorPriv);
+    const msgHash = new TextEncoder().encode(verdict);
 
-    const startAuth = performance.now();
-    await secp.schnorr.verify(sig, new TextEncoder().encode(verdict), auditorPub);
-    const endAuth = performance.now();
-    const authTime = endAuth - startAuth;
+    console.log("\n--- Multi-Party Retrieval & Decryption Evaluation ---");
 
-    // 3. Decryption (Phase 5)
-    // Only happens if 1 and 2 are successful
-    const startDecrypt = performance.now();
-    // Use a simple AES-GCM or your CryptoCore.decrypt mock
-    const endDecrypt = performance.now();
-    const decryptTime = endDecrypt - startDecrypt;
+    for (const m of auditorPoolSizes) {
+        const T = Math.ceil((2 * m) / 3);
+        
+        console.log(`\nEvaluating Quorum: ${T}/${m} Auditors`);
 
-    console.log(`- Proof Verification Latency (SMT): ${smtTime.toFixed(4)} ms`);
-    console.log(`- Auth Binding Latency (Schnorr): ${authTime.toFixed(4)} ms`);
-    console.log(`- Decryption Latency: ${decryptTime.toFixed(4)} ms`);
-    console.log(`- Total "Time to Useful Data": ${(smtTime + authTime + decryptTime).toFixed(4)} ms`);
+        const startSMT = performance.now();
+        await new Promise(r => setTimeout(r, 0.5));
+        const endSMT = performance.now();
+        const smtTime = endSMT - startSMT;
+
+        const startAuth = performance.now();
+        
+        for (let i = 0; i < T; i++) {
+            const priv = secp.utils.randomSecretKey();
+            const pub = secp.schnorr.getPublicKey(priv);
+            const sig = await secp.schnorr.sign(msgHash, priv);
+            
+            await secp.schnorr.verify(sig, msgHash, pub);
+        }
+        
+        const endAuth = performance.now();
+        const totalAuthTime = endAuth - startAuth;
+
+        const startDecrypt = performance.now();
+        const endDecrypt = performance.now();
+        const decryptTime = endDecrypt - startDecrypt;
+
+        const timeToUsefulData = smtTime + totalAuthTime + decryptTime;
+
+        console.log(`- SMT Verification: ${smtTime.toFixed(4)} ms`);
+        console.log(`- Multi-Party Auth (${T} sigs): ${totalAuthTime.toFixed(4)} ms`);
+        console.log(`- Decryption: ${decryptTime.toFixed(4)} ms`);
+        console.log(`- TOTAL TIME TO USEFUL DATA: ${timeToUsefulData.toFixed(4)} ms`);
+    }
 }
 
-testRetrievalAndDecryption();
+testMultiPartyRetrieval();

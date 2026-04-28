@@ -3,7 +3,6 @@ import * as crypto from 'crypto';
 async function testEncryptionOverhead() {
     console.log("\n--- Phase 1: Baseline Encryption Evaluation ---");
 
-    // Standard IoT/Edge packet sizes: 1KB, 10KB, 100KB
     const sizes = [1024, 10240, 102400]; 
     const key = crypto.randomBytes(32);
     const iv = crypto.randomBytes(12);
@@ -11,14 +10,12 @@ async function testEncryptionOverhead() {
     for (const size of sizes) {
         const data = crypto.randomBytes(size);
 
-        // Measure Encryption (Phase 1)
         const startEnc = performance.now();
         const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
         const encrypted = Buffer.concat([cipher.update(data), cipher.final()]);
-        const tag = cipher.getAuthTag(); // This is the standard MAC, not your HVT
+        const tag = cipher.getAuthTag();
         const endEnc = performance.now();
 
-        // Measure Decryption (Phase 5)
         const startDec = performance.now();
         const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv);
         decipher.setAuthTag(tag);

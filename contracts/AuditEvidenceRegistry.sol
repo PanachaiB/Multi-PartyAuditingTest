@@ -14,13 +14,12 @@ contract AuditEvidenceRegistry {
         bool isSuccess;      
     }
 
-    uint256 public constant THRESHOLD = 2; // T = 2 for this demo
+    uint256 public constant THRESHOLD = 2;
     mapping(bytes32 => AuditSession) public audits;
     mapping(bytes32 => mapping(address => bool)) public hasVoted;
 
     event AuditFinalized(bytes32 challengeDigest, bool result);
 
-    // Phase 4: Submit local verdict (v_j)
     function submitVote(bytes32 h_chal, bytes32 _smtRoot, bool localVerdict) external {
         AuditSession storage session = audits[h_chal];
         
@@ -29,12 +28,11 @@ contract AuditEvidenceRegistry {
 
         if (localVerdict) {
             session.voteCount += 1;
-            session.smtRoot = _smtRoot; // Store the root for public verification
+            session.smtRoot = _smtRoot;
         }
 
         hasVoted[h_chal][msg.sender] = true;
 
-        // Phase 5: Threshold-based Decision
         if (session.voteCount >= THRESHOLD) {
             session.finalized = true;
             session.isSuccess = true;

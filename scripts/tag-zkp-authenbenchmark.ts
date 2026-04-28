@@ -11,7 +11,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 async function getDeployedAddress(contractName: string) {
-    // This will now work correctly
     const filePath = path.join(__dirname, "../ignition/deployments/chain-31337/deployed_addresses.json");
     
     if (!fs.existsSync(filePath)) {
@@ -26,23 +25,17 @@ async function getDeployedAddress(contractName: string) {
 async function runBenchmarks() {
     console.log("--- Research Paper Performance Evaluation ---");
     
-    // Setup: Generate a valid 32-byte private key for the "Auditor"
     const privKey = secp.utils.randomSecretKey();
     const pubKey = secp.schnorr.getPublicKey(privKey);
-    
-    // Phase 2 Mock Data: Graph Node with 3 Structural Links
     const nodeId = "node-001";
-    const mockCiphertext = "encrypted_data_block_xyz".repeat(50); // ~1KB block
+    const mockCiphertext = "encrypted_data_block_xyz".repeat(50);
     const mockAdjacency = ["node-002", "node-005", "node-009"];
 
-    // 1. Measure Phase 2: Graph-Aware Tag (HVT) Generation
     const startTag = performance.now();
     const hvt = CryptoCore.generateGraphTag(nodeId, mockCiphertext, mockAdjacency);
     const endTag = performance.now();
     console.log(`[Phase 2] HVT Generation (Local): ${(endTag - startTag).toFixed(4)} ms`);
 
-    // 2. Measure Phase 3: ZKP (Schnorr) Generation
-    // This is the "Proving Time" for your paper
     const challenge = "audit-session-challenge-2026";
     const startZKP = performance.now();
     const proof = await CryptoCore.generateZKP(challenge, privKey);
