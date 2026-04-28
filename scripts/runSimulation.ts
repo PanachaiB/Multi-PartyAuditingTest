@@ -1,4 +1,4 @@
-import { CryptoCore } from "../lib/CryptoCore.js";
+import { CryptoCore } from "../dist/lib/CryptoCore.js";
 import * as secp from "@noble/secp256k1";
 
 async function runThresholdSimulation() {
