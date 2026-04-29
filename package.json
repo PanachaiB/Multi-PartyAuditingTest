@@ -8,7 +8,12 @@
     "compile": "hardhat compile",
     "node": "hardhat node",
     "test": "hardhat test",
-    "simulate": "hardhat run scripts/runSimulation.ts --network localhost"
+    "simulate": "hardhat run scripts/runSimulation.ts --network localhost",
+    "phase1" : "hardhat iginition deploy ./iginition/modules/deploy.ts --network localhost",
+    "phase2" : "hardhat run scripts/smtbenchmark.ts --network localhost",
+    "phase3" : "hardhat run scripts/auditbenchmark.ts --network localhost",
+    "phase4" : "hardhat run scripts/retrievalbenchmark.ts --network localhost",
+    "phase5" : "hardhat run scripts/auditlog.ts --network localhost"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^2.1.2",
