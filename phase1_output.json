@@ -1,0 +1,34 @@
+{
+    "SIIT": {
+        "partyId": "SIIT",
+        "epoch": 1,
+        "threshold": "3",
+        "aeadKey": "3dff8be811afc3cd0fed25961e65f88ea0cb334d74a00ca048f902fd2efd2c4e",
+        "gmsk": "494d284d63dcf59c44e2ce54014bf2308947c85bfbd8ea2f0c05cacd80b675c3",
+        "gpk": "03e1eda0d2742b02253245e39b23962202fe0ca2ea10c1b10ebfdc40219834b6c2",
+        "zkpProvingKey": "04ded48e080c70102b67f8bbb1c8d4f4968440dbd382b7fed4591a3527b93700",
+        "zkpVerifyingKey": "fa1dccfcc4c1d111697f6e5b54c2b86b4588fd4ca8955181f1bb703a42c24a7d",
+        "authorizedPeers": [
+            "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+            "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+            "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+            "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+            "0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc"
+        ]
+    },
+    "Chula": {
+        "partyId": "Chula",
+        "epoch": 1,
+        "threshold": "2",
+        "aeadKey": "eb4c9f908430b8c86d804405800ffd84e35cf44d03a6a2688e178bb19eae8400",
+        "gmsk": "929235f53643594f57f9449bce9c3ed4f05e876bcc2e366a957eb064e80ca2cc",
+        "gpk": "02a23b7fcaabc984e56dbf0dc9829342560feeacaa01354a5703e0ba3c9d6a145d",
+        "zkpProvingKey": "a6e8794fa6be46e12ccc345b0da120d5b235fd35f7df9acd8100bb869f31970b",
+        "zkpVerifyingKey": "70967fd3d0080873f6f7f98a408be7068442e41e0abe4476c570823fb55c1548",
+        "authorizedPeers": [
+            "0x976EA74026E726554dB657fA54763abd0C3a0aa9",
+            "0x14dC79964da2C08b23698B3D3cc7Ca32193d9955",
+            "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
+        ]
+    }
+}

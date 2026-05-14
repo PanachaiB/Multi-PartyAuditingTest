@@ -1,0 +1,13 @@
+{
+    "partyId": "SIIT",
+    "epoch": "1",
+    "retrievedAt": "2026-05-14T00:33:28.812Z",
+    "shards": [
+        "0.bin",
+        "1.bin",
+        "2.bin",
+        "3.bin",
+        "4.bin",
+        "None.bin"
+    ]
+}

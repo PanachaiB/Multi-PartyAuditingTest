@@ -7,7 +7,6 @@ const { ethers } = hre as any;
 
 async function getDeployedAddress(contractName: string): Promise<string> {
     const filePath = path.resolve(process.cwd(), "ignition", "deployments", "chain-31337", "deployed_addresses.json");
-
     if (!fs.existsSync(filePath)) {
         throw new Error(`Deployment file not found. Run: npx hardhat ignition deploy ./ignition/modules/AuditModule.ts --network localhost`);
     }
@@ -19,13 +18,11 @@ async function getDeployedAddress(contractName: string): Promise<string> {
 
 async function initializePKG() {
     try {
-        console.log(`--- Phase 1: Multi-Party PKG Initialization ---`);
-        
+        console.log(`--- Phase 1: Multi-Party PKG Initialization with ZKP ---`);
         const accessManagerAddress = await getDeployedAddress("AuditAccessManager");
         const accessManager = await ethers.getContractAt("AuditAccessManager", accessManagerAddress);
         const signers = await ethers.getSigners();
 
-        // Define your multiple parties and their specific requirements
         const parties = [
             { id: "SIIT", threshold: 3, peerCount: 5 },
             { id: "Chula", threshold: 2, peerCount: 3 }
@@ -34,48 +31,53 @@ async function initializePKG() {
         let multiPartyConfig: any = {};
 
         for (const party of parties) {
-            console.log(`\n> Setting up ${party.id} (T=${party.threshold}, M=${party.peerCount})...`);
+            console.log(`\n> Setting up ${party.id}...`);
 
-            // 1. Generate unique keys for THIS party
+            // 1. ZKP Key Generation Simulation
+            const masterSecret = crypto.randomBytes(32).toString('hex');
+            const provingKey = crypto.createHmac('sha256', masterSecret).update("PROVE").digest('hex');
+            const verifyingKey = crypto.createHmac('sha256', masterSecret).update("VERIFY").digest('hex');
+
+            // 2. Existing Group Keys
             const aeadKey = crypto.randomBytes(32);
             const gmsk = secp.utils.randomSecretKey();
             const gpk = secp.getPublicKey(gmsk);
 
-            console.log(`\n>AEAD for ${party.id} is ${aeadKey.toString('hex')}`);
-            console.log(`Group Master Secret Key for ${party.id} is ${Buffer.from(gmsk).toString('hex')}`);
-            console.log(`Group Public Key (GPK) for ${party.id} is ${Buffer.from(gpk).toString('hex')}`);
-
-            // 2. Authorize peers on-chain for THIS specific partyId
-            // We use different signers from Hardhat to simulate different people
+            // 3. Define the peers for this party (Fixes the ReferenceError)
             const startIndex = parties.indexOf(party) * 5 + 1; 
             const partyPeers = signers.slice(startIndex, startIndex + party.peerCount);
 
-            for (const peer of partyPeers) {
-                // Calling the NEW contract function: authorizePeer(partyId, address, threshold)
-                const tx = await accessManager.authorizePeer(party.id, peer.address, party.threshold);
-                await tx.wait();
-                console.log(`   [OK] Authorized ${peer.address} for ${party.id}`);
-            }
+            // 4. ANCHOR ON-CHAIN: Call the NEW authorizeParty function
+            console.log(`   Anchoring Verifying Key for ${party.id}...`);
+            const vKeyBytes32 = `0x${verifyingKey}`;
+            
+            const tx = await accessManager.authorizeParty(
+                party.id, 
+                party.threshold, 
+                party.peerCount, 
+                vKeyBytes32
+            );
+            await tx.wait();
 
-            // 3. Store config for this party
+            // 5. Store config for JSON export
             multiPartyConfig[party.id] = {
                 partyId: party.id,
-                epoch: 1, // Start at Epoch 1
+                epoch: 1,
                 threshold: party.threshold.toString(),
                 aeadKey: aeadKey.toString('hex'),
                 gmsk: Buffer.from(gmsk).toString('hex'),
                 gpk: Buffer.from(gpk).toString('hex'),
+                zkpProvingKey: provingKey,
+                zkpVerifyingKey: verifyingKey, 
                 authorizedPeers: partyPeers.map((p: any) => p.address)
             };
+            
+            console.log(`   [OK] ${party.id} setup complete.`);
         }
 
-        // --- Export everything to a single JSON ---
-        const outputPath = path.resolve(process.cwd(), "pkg_params_multi.json");
+        const outputPath = path.resolve(process.cwd(), "phase1_output.json");
         fs.writeFileSync(outputPath, JSON.stringify(multiPartyConfig, null, 4));
-        
-        console.log(`\n--- [SUCCESS] ---`);
-        console.log(`Multi-party parameters exported to: ${outputPath}`);
-
+        console.log(`\n--- [SUCCESS] Phase 1 Config Exported ---`);
     } catch (error) {
         console.error("Setup Failed:", error);
     }
