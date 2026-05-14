@@ -1,14 +1,12 @@
 {
     "SIIT": {
         "partyId": "SIIT",
-        "globalRoot": "0x860d071040aded49ffa8a44bdbb8ed8865aa26e898899498410571cc1916868f",
-        "nodeCount": 700000,
-        "timestamp": 1778718627.4543643
+        "globalRoot": "0x9fd2f8a89febccf6b81535e485511e4c1f6018b98d1fc402693f979e3c0e978d",
+        "nodeCount": 700000
     },
     "Chula": {
         "partyId": "Chula",
-        "globalRoot": "0xaae10276d19e65259d385322d1ef3a98112ef1512fbb2acf82c07b46f3c91ca0",
-        "nodeCount": 300000,
-        "timestamp": 1778718627.8513188
+        "globalRoot": "0x2de6d3287ce8e78702b1cc81af233e37fa99d930cfb2db526ec20a37de7b9156",
+        "nodeCount": 300000
     }
 }

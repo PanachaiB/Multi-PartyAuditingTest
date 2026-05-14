@@ -40,7 +40,7 @@ async function main() {
     const data = phase2Data[partyId];
     const globalRoot = data.globalRoot;
 
-    const epoch = "1";
+    const epoch = "5";
     const h_chal = ethers.solidityPackedKeccak256(["string", "string"], [partyId, epoch]);
 
     console.log(`\n📦 Processing Party: ${partyId}`);

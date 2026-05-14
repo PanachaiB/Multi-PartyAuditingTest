@@ -18,7 +18,7 @@ async function getDeployedAddress(contractName: string): Promise<string> {
 async function main() {
     try {
         const partyId = "SIIT";
-        const epoch = "1"; // Must match the epoch used in Phase 3
+        const epoch = "4"; // Must match the epoch used in Phase 3
         
         const registryAddress = await getDeployedAddress("AuditEvidenceRegistry");
         const registry = await ethers.getContractAt("AuditEvidenceRegistry", registryAddress);

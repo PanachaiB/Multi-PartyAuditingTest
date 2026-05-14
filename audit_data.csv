@@ -1,4 +1,4 @@
-party_id,record_id,amount,status
+party_id,node_id,amount,status
 SIIT,101,5000,Clean
 SIIT,102,7500,Clean
 Chula,201,1200,Flagged
