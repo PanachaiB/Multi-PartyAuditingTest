@@ -34,17 +34,15 @@ npx hardhat compile
 Now we can move to running tests. The proof of concept logic test is in the file runSimulation.ts and can be run using the following command:
 
 ```shell
-npx tsx scripts/runSimulation.ts
-```
-
-If you can a text editor, you can open the file and change some parameters like the number of auditing peers, the threshold, and other factors that could influence the voting process. Next, we will move onto running the commands that are used for benchmarking the performance of our system.
-
-```shell
-npx tsx scripts/encryptbenchmark.ts
-npx tsx scripts/smtbenchmark.ts
-npx tsx scripts/tag-zkp-authenbenchmark.ts
-npx tsx scripts/auditbenchmark.ts
-npx tsx scripts/retrievalbenchmark.ts
+Open 2 terminals, make sure both are pointing to the folder
+Run npx hardhat node on one of them
+the other starts with running npm run phase1 for setup of contract
+1. Run npx hardhat run scripts/phase1.ts --network localhost
+2. Run the phase2 python script
+3. Run the phase3.ts script (don't forget --network localhost)
+4. Run the phase4.ts script to show that no consensus = no retrieval
+5. Run the audit commands: npx hardhat audit --party SIIT--signer 6 --epoch 4 --success true --network localhost
+6. Run the phase4.ts script again to show files are accessible now
 ```
 
 'encryptbenchmark.ts' shows the performance of our encryption method by testing with various data sizes.
